@@ -1,1 +1,1 @@
-# Flutter_Template_CA
+# Flutter Template Clean Architecture
