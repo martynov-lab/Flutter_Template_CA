@@ -1,4 +1,4 @@
-/// contains all service to get data from local
+// contains all service to get data from local
 class LocalStorageServices {
   static final LocalStorageServices _localStorageServices =
       LocalStorageServices._internal();
@@ -11,7 +11,7 @@ class LocalStorageServices {
   // to save data in local, you can use SharedPreferences for simple data
   // or Sqflite for more complex data
 
-  /// example :
+  // example :
   // Future<void> saveToken(String token) async {
   //   SharedPreferences prefs = await SharedPreferences.getInstance();
   //   prefs.setString('token', token);

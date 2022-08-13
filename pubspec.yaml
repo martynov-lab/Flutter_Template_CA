@@ -10,15 +10,55 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
+  # Http client
+  http: ^0.13.4
+  # dio: ^4.0.6
   # State Management
   flutter_bloc: ^8.0.1
   # Simplify Equality Comparisons
   equatable: ^2.0.3
   # Tools for programming in a functional style
   dartz: ^0.10.1
+  permission_handler: ^9.2.0
+  # Native splash screen
+  flutter_native_splash: ^2.2.3+1
   # Service Locator
   get_it: ^7.2.0
+  # Draw SVG files on a Flutter Widget.
+  flutter_svg: ^1.0.3
+  # A wrapper around InheritedWidget
+  provider: ^6.0.3
+  # Introduction screen
+  introduction_screen: ^3.0.2
+  # Database
+  hive_flutter: ^1.1.0
+  # Bottom sheet
+  modal_bottom_sheet: ^2.0.1
+  # Country picker bottom sheet
+  country_picker: ^2.0.15
+  # A flutter ListView in which list items can be grouped to sections
+  grouped_list: ^5.1.1
+  # Mask for textfield
+  mask_text_input_formatter: ^2.3.0
+  # Storage for simple data
+  shared_preferences: ^2.0.15
+  # Notifications permission
+  notification_permissions: ^0.6.1
+  # Tracking permission
+  app_tracking_transparency: ^2.0.2+4
+  # Local storage
+  hive: ^2.2.2
+  # Validation form
+  formz: ^0.4.1
+  # flutter_keyboard_visibility: ^5.3.0
+  # Icon
+  cupertino_icons: ^1.0.5
+  # Library that checks for an Active Internet connection
+  internet_connection_checker: ^0.0.1+4
+
+  overlay_support: ^2.0.1
+  # Authentication with biometrics such as fingerprint or facial recognition
+  local_auth: ^2.1.0
 
 dev_dependencies:
   flutter_test:

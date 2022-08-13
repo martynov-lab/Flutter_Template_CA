@@ -1,36 +1,41 @@
-import 'package:flutter_template_clean_architecture/features/domain/entities/user_entity.dart';
+import '../../domain/entities/user_entity.dart';
 
-class UserModel{
-  String? uid;
-  bool? isVerified;
-  final String? email;
-  final String? phone;
-  String? password;
-  UserModel({this.uid, this.email, this.phone, this.password, this.isVerified});
+class UserModel extends UserEntity {
+  const UserModel({
+    required customerId,
+    required email,
+    required confirmedEmail,
+    required phone,
+  }) : super(
+    customerId: customerId,
+    email: email,
+    confirmedEmail: confirmedEmail,
+    phone: phone,
+  );
 
-  Map<String, dynamic> toMap() {
-    return {
-      'email': email,
-    };
-  }
-
-  UserModel.fromJson(Map<String, dynamic> json)
-      : uid = json['id'],
-        phone = json["phone"] ?? '',
-        email = json["email"];
-
-  UserModel copyWith({
-    bool? isVerified,
-    String? uid,
-    String? email,
-    String? password,
-    String? displayName,
-    int? age,
-  }) {
+  factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-        uid: uid ?? this.uid,
-        email: email ?? this.email,
-        password: password ?? this.password,
-        isVerified: isVerified ?? this.isVerified);
+      customerId: json['customerId'] ?? 00,
+      email: json['email'] ?? '',
+      confirmedEmail: json['confirmedEmail'] ?? false,
+      phone: json['phone'] ?? '',
+    );
   }
+
+// Map<String, dynamic> toJson() {
+//   return {
+//     'id': id,
+//     'name': name,
+//   };
+// }
+
+// UserModel copyWith({
+//   int? id,
+//   String? name,
+// }) {
+//   return UserModel(
+//     id: id ?? this.id,
+//     name: name ?? this.name,
+//   );
+// }
 }

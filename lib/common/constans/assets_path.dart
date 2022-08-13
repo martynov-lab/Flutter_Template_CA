@@ -1,29 +1,34 @@
 part of app_constants;
 
 class Font {
-  // Example:
-  // static const roboto = 'roboto';
-  // static const arial = 'arial';
+  static const sfText = 'SF_Text';
 }
 
 class ImageAnimationPath {
-  // you can get free animation image from rive or lottiefiles
-
-  // Example:
-  // static const _folderPath = "assets/images/animation";
-  // static const myAnim = "$_folderPath/my_anim.json";
+  // static const _folderPath = 'assets/images/animation';
+  // static const myAnim = '$_folderPath/my_anim.json';
 }
 
 class ImageRasterPath {
-  // Example:
-  // static const _folderPath = "assets/images/raster";
-  // static const myRaster = "$_folderPath/my_raster.png";
-  // static const myRaster2 = "$_folderPath/my_raster2.jpg";
-  // static const myRaster3 = "$_folderPath/my_raster3.jpeg";
+  static const _folderPath = 'assets/images/raster';
+  static const myRaster1 = '$_folderPath/welcome_1.png';
+  static const myRaster2 = '$_folderPath/welcome_2.png';
+  static const myRaster3 = '$_folderPath/welcome_3.png';
+  static const myRaster4 = '$_folderPath/welcome_4.png';
+  static const myRaster5 = '$_folderPath/welcome_5.png';
+  static const ready = '$_folderPath/ready.png';
+  static const referal = '$_folderPath/referal.png';
+  static const pill = '$_folderPath/pill.png';
 }
 
-class ImageVectorPath {
-  // Example:
-  // static const _folderPath = "assets/images/vector";
-  // static const myVector = "$_folderPath/vector/my_vector.svg";
+class ImageLogoPath {
+  static const _folderPath = 'assets/logo';
+  static const logoWhite = '$_folderPath/logo_white_big.png';
+  static const logoBlack = '$_folderPath/logo_black_big.png';
 }
+
+// class ImageVectorPath {
+//   static const _folderPath = 'assets/logo';
+//   static const logoWhite = '$_folderPath/logo_white_big.png';
+//   static const logoBlack = '$_folderPath/logo_black_big.png';
+// }

@@ -1,6 +1,6 @@
+import 'package:crypterium_flutter/features/presentation/screens/auth/inter_pin_view.dart';
+import 'package:crypterium_flutter/features/presentation/screens/screens.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_template_clean_architecture/features/presentation/screens/home_view.dart';
-import 'package:flutter_template_clean_architecture/features/presentation/screens/login_view.dart';
 
 part 'app_routes.dart';
 
@@ -14,13 +14,24 @@ class AppPages {
     switch (settings.name) {
       case LoginView.routeName:
         return MaterialPageRoute(builder: (BuildContext context) {
-          return LoginView();
+          return const LoginView();
+        });
+      case WelcomeView.routeName:
+        return MaterialPageRoute(builder: (BuildContext context) {
+          return const WelcomeView();
         });
       case HomeView.routeName:
         return MaterialPageRoute(builder: (BuildContext context) {
           return HomeView();
         });
-
+      // case InterPinScreen.routeName:
+      //   return MaterialPageRoute(builder: (BuildContext context) {
+      //     return const InterPinScreen(token: ,);
+      //   });
+      case RegisterView.routeName:
+        return MaterialPageRoute(builder: (BuildContext context) {
+          return const RegisterView();
+        });
       // case OtherScreen.routeName:
       //   final args = settings.arguments as Map<String, dynamic>;
       //   return MaterialPageRoute(builder: (BuildContext context) {
