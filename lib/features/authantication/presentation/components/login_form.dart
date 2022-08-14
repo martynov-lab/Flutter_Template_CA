@@ -1,174 +1,428 @@
+import 'package:crypterium_flutter/common/constans/colors.dart';
+import 'package:crypterium_flutter/common/shared_components/app_snackbar/custom_snackbar.dart';
+import 'package:crypterium_flutter/common/shared_components/app_snackbar/top_snack_bar.dart';
+import 'package:crypterium_flutter/common/shared_components/country_region.dart';
+import 'package:crypterium_flutter/common/shared_components/input_widget.dart';
+import 'package:crypterium_flutter/common/shared_components/ui_utils.dart';
+import 'package:crypterium_flutter/common/utils/services/country_provider.dart';
+import 'package:crypterium_flutter/features/data/models/country_region_model.dart';
+import 'package:crypterium_flutter/features/domain/usecases/auth_use_case.dart';
+import 'package:crypterium_flutter/features/presentation/bloc/form_bloc/form_bloc.dart';
+import 'package:crypterium_flutter/features/presentation/components/components.dart';
 import 'package:flutter/material.dart';
+import 'package:crypterium_flutter/features/presentation/bloc/authentication_bloc/authentication_bloc_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_template_clean_architecture/features/presentation/bloc/authentication_bloc/authentication_bloc_bloc.dart';
-import 'package:flutter_template_clean_architecture/features/presentation/bloc/login_bloc/login_bloc_bloc.dart';
-import 'package:flutter_template_clean_architecture/features/presentation/components/button_widget.dart';
+import 'package:formz/formz.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:provider/provider.dart';
+import 'package:crypterium_flutter/locator_service.dart' as di;
 
 class LoginForm extends StatefulWidget {
-  LoginForm({Key? key}) : super(key: key);
+  final height;
+
+  LoginForm({Key? key, required this.height}) : super(key: key);
 
   @override
   _LoginFormState createState() => _LoginFormState();
 }
 
 class _LoginFormState extends State<LoginForm> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  bool get isPopulated =>
-      _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
-
-  bool isButtonEnabled(LoginState state) {
-    return state.isFormValid && isPopulated && !state.isSubmitting;
-  }
-
-  late LoginBloc _loginBloc;
+  late AnimationController localAnimationController;
+  final _controllerPhone = TextEditingController();
+  final _controllerPassword = TextEditingController();
+  CountryModel? selectedCountry;
+  bool isSelected = false;
+  var maskForPhone = MaskTextInputFormatter(
+      mask: ' (###) ###-##-##', filter: {'#': RegExp(r'^[0-9]')});
 
   @override
   void initState() {
     super.initState();
-    _loginBloc = BlocProvider.of<LoginBloc>(context);
-    _emailController.addListener(_onEmailChange);
-    _passwordController.addListener(_onPasswordChange);
+    _controllerPhone.addListener(() {
+      context.read<FormBloc>().add(PhoneChanged(
+            phone: isSelected
+                ? '${selectedCountry!.phone}${_controllerPhone.text}'
+                    .replaceAll(RegExp(r'[^0-9]'), '')
+                : '+7${_controllerPhone.text}'
+                    .replaceAll(RegExp(r'[^0-9]'), ''),
+          ));
+    });
+    _controllerPassword.addListener(() {
+      context
+          .read<FormBloc>()
+          .add(PasswordChanged(password: _controllerPassword.text));
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginBloc, LoginState>(
+    return BlocListener<FormBloc, FormBlocState>(
       listener: (context, state) {
-        if (state.isFailure) {
-          Scaffold.of(context)
-            ..removeCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text('Login Failure'),
-                    Icon(Icons.error),
-                  ],
+        if (state.status.isSubmissionFailure) {
+          showTopSnackBar(
+            context,
+            CustomSnackBar.error(
+              message: state.errorMessage,
+              button: GestureDetector(
+                child: Icon(
+                  Icons.close,
+                  color: Colors.white,
                 ),
-                backgroundColor: Color(0xffffae88),
+                onTap: () => localAnimationController.reverse(),
               ),
-            );
-        }
-
-        if (state.isSubmitting) {
-          Scaffold.of(context)
-            ..removeCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text('Logging In...'),
-                    CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    )
-                  ],
-                ),
-                backgroundColor: Colors.white,
-              ),
-            );
-        }
-
-        if (state.isSuccess) {
-          BlocProvider.of<AuthenticationBloc>(context).add(
-            AuthenticationSignedOut(),
+            ),
+            //persistent: true,
+            onAnimationControllerInit: (controller) =>
+                localAnimationController = controller,
           );
         }
+
+        // if (state.status.isSubmissionInProgress) {
+        //   showTopSnackBar(
+        //     context,
+        //     CustomSnackBar.info(
+        //       message: 'Authorisation...',
+        //       button: GestureDetector(
+        //         child: Icon(
+        //           Icons.close,
+        //           color: Colors.white,
+        //         ),
+        //         onTap: () => localAnimationController.reverse(),
+        //       ),
+        //     ),
+        //     //persistent: true,
+        //     onAnimationControllerInit: (controller) =>
+        //         localAnimationController = controller,
+        //   );
+        // }
+
+        if (state.status.isSubmissionSuccess) {
+          BlocProvider.of<AuthenticationBloc>(context).add(
+            LoggedIn(token: state.token),
+          );
+          // showTopSnackBar(
+          //   context,
+          //   CustomSnackBar.success(
+          //     message: 'Authorisation success!',
+          //     button: GestureDetector(
+          //       child: Icon(
+          //         Icons.close,
+          //         color: Colors.white,
+          //       ),
+          //       onTap: () => localAnimationController.reverse(),
+          //     ),
+          //   ),
+          //   //persistent: true,
+          //   onAnimationControllerInit: (controller) =>
+          //       localAnimationController = controller,
+          // );
+        }
       },
-      child: BlocBuilder<LoginBloc, LoginState>(
+      child: BlocBuilder<FormBloc, FormBlocState>(
         builder: (context, state) {
-          return Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Form(
-              child: Column(
-                children: <Widget>[
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.email),
-                      labelText: "Email",
+          return Container(
+            padding: const EdgeInsets.only(
+                top: 110, bottom: 40, left: 40, right: 40),
+            height: widget.height < 535.0
+                ? 550.0
+                : widget.height, //MediaQuery.of(context).size.height,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Login to your account',
+                      style: Theme.of(context).textTheme.headline4,
+                      textAlign: TextAlign.center,
                     ),
-                    keyboardType: TextInputType.emailAddress,
-                    //autovalidate: true,
-                    autocorrect: false,
-                    validator: (_) {
-                      return !state.isEmailValid ? 'Invalid Email' : null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.lock),
-                      labelText: "Password",
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Haven't yet?",
+                          style: Theme.of(context).textTheme.subtitle2,
+                          textAlign: TextAlign.center,
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            // Navigator.of(context).push(
+                            //   MaterialPageRoute(builder: (BuildContext context) {
+                            //     return RegisterView();
+                            //   }),
+                            // );
+                            //! Преход на страницу регистрации
+                            BlocProvider.of<AuthenticationBloc>(context)
+                                .add(Register());
+                            //Clean forms
+                            BlocProvider.of<FormBloc>(context)
+                                .add(CleanState());
+                          },
+                          child: Text(
+                            'Sign Up',
+                            textAlign: TextAlign.center,
+                            style:
+                                Theme.of(context).textTheme.caption!.copyWith(
+                                      fontSize: 14,
+                                    ),
+                          ),
+                        ),
+                      ],
                     ),
-                    obscureText: true,
-                    //autovalidate: true,
-                    autocorrect: false,
-                    validator: (_) {
-                      return !state.isPasswordValid ? 'Invalid Password' : null;
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20, top: 40),
+                      child: Focus(
+                        onFocusChange: (hasFocus) {
+                          if (!hasFocus) {
+                            //context.read<FormBloc>().add(PhoneUnfocused());
+                            //_phoneFocusNode.unfocus();
+                          }
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Consumer<CountryProvider>(
+                                builder: (context, servise, _) {
+                              if (servise.isSelected) {
+                                selectedCountry = servise.selected;
+                                isSelected = true;
+                                // maskForPhone = MaskTextInputFormatter(
+                                //     mask: ' (###) ###-##-##',
+                                //     filter: {'#': RegExp(r'^[0-9]')});
+
+                                //FocusScope.of(context).requestFocus(_phoneFocusNode);
+                                // print('Russia:  ${selectedCountry!.flag.toString()}');
+                              }
+
+                              return GestureDetector(
+                                onTap: () {
+                                  isSelected = false;
+                                  servise.isSearch = false;
+                                  servise.cleanSearch();
+                                  servise.loadCountries();
+                                  AppBottomSheet.showButtomSheet(
+                                    context: context,
+                                    isExpanded: false,
+                                    heightOffset: 40,
+                                    isWrapContent: false,
+                                    child: const CountryRegion(),
+                                  );
+                                },
+                                child: Container(
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .chipTheme
+                                        .backgroundColor,
+                                    border: state.phone.invalid
+                                        ? Border.all(
+                                            color: ColorApp.error, width: 1)
+                                        : Border.all(
+                                            color: Colors.transparent,
+                                            width: 0),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(16.0)),
+                                  ),
+                                  child: isSelected
+                                      ? Container(
+                                          color: Colors.transparent,
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 20),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 5),
+                                                child: Text(
+                                                    selectedCountry!.flag!,
+                                                    style: const TextStyle(
+                                                        fontSize: 14)),
+                                              ),
+                                              Text(
+                                                '+${selectedCountry!.phone}',
+                                                style: state.phone.invalid
+                                                    ? Theme.of(context)
+                                                        .textTheme
+                                                        .caption!
+                                                        .copyWith(
+                                                            color:
+                                                                ColorApp.error)
+                                                    : Theme.of(context)
+                                                        .inputDecorationTheme
+                                                        .labelStyle,
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      : Container(
+                                          color: Colors.transparent,
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 25, vertical: 20),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 5),
+                                                child: Text('🇷🇺',
+                                                    style: const TextStyle(
+                                                        fontSize: 14)),
+                                              ),
+                                              Text(
+                                                '+7',
+                                                style: state.phone.invalid
+                                                    ? Theme.of(context)
+                                                        .textTheme
+                                                        .caption!
+                                                        .copyWith(
+                                                            color:
+                                                                ColorApp.error)
+                                                    : Theme.of(context)
+                                                        .inputDecorationTheme
+                                                        .labelStyle,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                ),
+                              );
+                            }),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              child: Container(
+                                child: InputWidget(
+                                  context: context,
+                                  controller: _controllerPhone,
+                                  hint: ' (000) 000-00-00',
+                                  keyboardNumber: TextInputType.phone,
+                                  isValidate: state.phone.invalid,
+                                  maskForInput: [maskForPhone],
+                                  obscure: false,
+                                  isObscureSecond: false,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 0),
+                      child: Focus(
+                        onFocusChange: ((hasFocus) {
+                          if (!hasFocus) {}
+                        }),
+                        child: InputWidget(
+                          context: context,
+                          controller: _controllerPassword,
+                          hint: 'Password',
+                          keyboardNumber: null,
+                          // TextInputType.phone,
+                          isValidate: state.password.invalid,
+                          maskForInput: [],
+                          obscure: true,
+                          isObscureSecond: false,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Forgot your password? ',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle2!
+                                  .copyWith(fontSize: 12),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            var currentFocus = FocusScope.of(context);
+
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
+
+                            //! Переход на востановление пароля
+                            BlocProvider.of<AuthenticationBloc>(context).add(
+                              Restore(phoneNumber: _controllerPhone.text),
+                            );
+                          },
+                          child: Text(
+                            'Restore password',
+                            textAlign: TextAlign.center,
+                            style:
+                                Theme.of(context).textTheme.caption!.copyWith(
+                                      fontSize: 12,
+                                      // color: Theme.of(context).primaryColorDark,
+                                    ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
+                // widget.isScroll
+                //     ?
+                // SizedBox(
+                //         height: 30,
+                //       )
+                //     : Expanded(
+                //         child: SizedBox(
+                //           height: 30,
+                //         ),
+                //       ),
+
+                BlocProvider<FormBloc>(
+                  create: ((_) => FormBloc(
+                        useCase: di.sl<AuthUseCase>(),
+                      )),
+                  child: ButtonWidget(
+                    text: 'Confirm',
+                    onPressed: () {
+                      var currentFocus = FocusScope.of(context);
+
+                      if (!currentFocus.hasPrimaryFocus) {
+                        currentFocus.unfocus();
+                      }
+                      state.phone.value.isNotEmpty &&
+                              state.password.value
+                                  .isNotEmpty //state.status.isValidated
+                          ? context.read<FormBloc>().add(LoginSubmitted())
+                          : () {};
                     },
+                    isActive: state.phone.value.isNotEmpty &&
+                        state.password.value
+                            .isNotEmpty, //state.status.isValidated,
+                    //style: Theme.of(context).textTheme.button,
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  ButtonWidget(
-                    text: 'LogIn',
-                    onClicked: () {},
-                    isActive: true,
-                  ),
-                  // Button(
-                  //   width: 150,
-                  //   height: 45,
-                  //   onPressed: () {
-                  //     if (isButtonEnabled(state)) {
-                  //       _onFormSubmitted();
-                  //     }
-                  //   },
-                  //   text: Text(
-                  //     'LogIn',
-                  //     style: TextStyle(
-                  //       color: Colors.white,
-                  //     ),
-                  //   ),
-                  //   icon: Icon(
-                  //     Icons.check,
-                  //     color: Colors.white,
-                  //   ),
-                  // ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  ButtonWidget(
-                    text: 'Register',
-                    onClicked: () {},
-                    isActive: true,
-                  ),
-                  // Button(
-                  //   width: 150,
-                  //   height: 45,
-                  //   onPressed: () {
-                  //     Navigator.push(context, MaterialPageRoute(builder: (_) {
-                  //       return RegisterScreen(
-                  //         userRepository: widget._userRepository,
-                  //       );
-                  //     }));
-                  //   },
-                  //   text: Text(
-                  //     'Register',
-                  //     style: TextStyle(
-                  //       color: Colors.white,
-                  //     ),
-                  //   ),
-                  //   icon: Icon(
-                  //     Icons.arrow_forward,
-                  //     color: Colors.white,
-                  //   ),
-                  // ),
-                ],
-              ),
+
+                  //LoginForm(),
+                ),
+
+                //),
+                // SizedBox(height: 30),
+              ],
             ),
           );
         },
@@ -178,22 +432,8 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
+    _controllerPhone.dispose();
+    _controllerPassword.dispose();
     super.dispose();
-  }
-
-  void _onEmailChange() {
-    _loginBloc.add(LoginEmailChange(/*email: _emailController.text*/));
-  }
-
-  void _onPasswordChange() {
-    _loginBloc
-        .add(LoginPasswordChanged(/*password: _passwordController.text*/));
-  }
-
-  void _onFormSubmitted() {
-    _loginBloc.add(LoginWithCredentialsPressed(
-        /* email: _emailController.text, password: _passwordController.text*/));
   }
 }

@@ -27,4 +27,20 @@ class AuthenticationLocalDataSource {
     bool isAuth = true;
     return isAuth;
   }
+
+
+  Future<void> setFirstVisit()async{
+
+  }
+  Future<bool> isFirstVisit() async {
+    return false;
+  }
+
+  Future<bool> hasToken ()async{
+    return true;
+  }
+
+  Future<void> signOut ()async{
+
+  }
 }

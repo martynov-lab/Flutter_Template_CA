@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+
+import '../../../common/constans/colors.dart';
 
 class ButtonWidget extends StatelessWidget {
   final String text;
-  final VoidCallback onClicked;
+  final TextStyle? style;
+  final VoidCallback? onPressed;
   final bool isActive;
 
   const ButtonWidget({
     Key? key,
     required this.text,
-    required this.onClicked,
+    this.style,
+    required this.onPressed,
     required this.isActive,
   }) : super(key: key);
 
@@ -17,21 +22,24 @@ class ButtonWidget extends StatelessWidget {
         height: 55,
         width: double.infinity,
         child: ElevatedButton(
-          child: Text(
-            text,
-            style: const TextStyle(fontSize: 20),
-          ),
           style: ElevatedButton.styleFrom(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
+                borderRadius: BorderRadius.circular(25.0)),
             primary: isActive
-                ? Color.fromARGB(255, 105, 112, 150)
-                : Color.fromARGB(255, 165, 175, 233),
+                ? ColorApp.yellowButton
+                : Theme.of(context).disabledColor,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             textStyle: const TextStyle(color: Colors.white),
           ),
-          onPressed: onClicked,
+          onPressed: onPressed,
+          child: Text(
+            text,
+            style: isActive
+                ? Theme.of(context).textTheme.button
+                : Theme.of(context).textTheme.button!.copyWith(
+                    color: ColorApp
+                        .textButtonNotActive), //style ?? const TextStyle(fontSize: 20),
+          ),
         ),
       );
 }

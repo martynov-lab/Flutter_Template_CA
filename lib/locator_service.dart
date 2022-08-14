@@ -1,9 +1,4 @@
-//import 'package:http/http.dart' as http;
 import 'package:get_it/get_it.dart';
-import 'package:flutter_template_clean_architecture/features/data/repositories/auth_repository_impl.dart';
-import 'package:flutter_template_clean_architecture/features/presentation/bloc/authentication_bloc/authentication_bloc_bloc.dart';
-
-import 'features/data/datasources/authentication_service.dart';
 
 final sl = GetIt.instance;
 

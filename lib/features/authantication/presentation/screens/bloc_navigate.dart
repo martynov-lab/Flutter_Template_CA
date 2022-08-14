@@ -1,21 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_template_clean_architecture/features/presentation/bloc/authentication_bloc/authentication_bloc_bloc.dart';
-import 'package:flutter_template_clean_architecture/features/presentation/screens/home_view.dart';
-import 'package:flutter_template_clean_architecture/features/presentation/screens/login_view.dart';
+import 'package:flutter_template_clean_architecture/features/authantication/presentation/screens/welcome_view.dart';
+import '../../../../common/shared_components/progress_indicator.dart';
+import '../../domain/usecases/auth_usecase.dart';
+import '../bloc/authentication_bloc/authentication_bloc.dart';
+import 'login_view.dart';
+import 'screens.dart';
 
 class BlocNavigate extends StatelessWidget {
-  const BlocNavigate({Key? key}) : super(key: key);
+  // static const routeName = Routes.initial;
+  final AuthUseCase useCase;
+
+  final AuthenticationBloc authenticationBloc;
+
+  const BlocNavigate({
+    Key? key,
+    required this.useCase,
+    required this.authenticationBloc,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
-      builder: (context, state) {
-        if (state is AuthenticationSuccess) {
-          return const HomeView();
-        } else {
-          return const LoginView();
+      builder: (_, state) {
+        if (state is AuthenticationFirstVisit) {
+          return WelcomeView();
         }
+        if (state is AuthenticationUninitialized) {
+          return LoadingIndicator();
+        }
+        if (state is AuthenticationAuthenticated) {
+          return HomeView();
+        }
+        if (state is AuthenticationUnauthenticated) {
+          return LoginView();
+        }
+        if (state is AuthenticationLoading) {
+          return const LoadingIndicator();
+        }
+        if (state is AuthenticationError) {
+          return LoginView();
+        }
+
+        return LoginView();
       },
     );
   }

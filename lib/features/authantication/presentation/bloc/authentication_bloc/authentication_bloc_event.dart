@@ -1,18 +1,21 @@
-part of 'authentication_bloc_bloc.dart';
+part of 'authentication_bloc.dart';
 
 abstract class AuthenticationEvent extends Equatable {
-  const AuthenticationEvent();
-
   @override
   List<Object> get props => [];
 }
 
-class AuthenticationStarted extends AuthenticationEvent {
+class AppStarted extends AuthenticationEvent {}
+
+class LoggedIn extends AuthenticationEvent {
+  final String token;
+
+  LoggedIn({required this.token});
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [token];
 }
 
-class AuthenticationSignedOut extends AuthenticationEvent {
-  @override
-  List<Object> get props => [];
-}
+class LoggedOut extends AuthenticationEvent {}
+
+class Register extends AuthenticationEvent {}
