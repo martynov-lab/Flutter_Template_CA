@@ -24,25 +24,25 @@ class BlocNavigate extends StatelessWidget {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
       builder: (_, state) {
         if (state is AuthenticationFirstVisit) {
-          return WelcomeView();
+          return const WelcomeView();
         }
         if (state is AuthenticationUninitialized) {
-          return LoadingIndicator();
+          return const LoadingIndicator();
         }
         if (state is AuthenticationAuthenticated) {
-          return HomeView();
+          return const HomeView();
         }
         if (state is AuthenticationUnauthenticated) {
-          return LoginView();
+          return const LoginView();
         }
         if (state is AuthenticationLoading) {
           return const LoadingIndicator();
         }
         if (state is AuthenticationError) {
-          return LoginView();
+          return const LoginView();
         }
 
-        return LoginView();
+        return const LoginView();
       },
     );
   }

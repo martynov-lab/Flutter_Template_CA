@@ -1,0 +1,6 @@
+{
+    "language": "Español",
+    "helloWorld": "Hola Mundo!",
+    "hello": "Hola {username}",
+    "loginout": "Iniciar sesión"
+}

@@ -28,6 +28,7 @@ class AuthenticationBloc
                   AuthenticationError(error: _mapFailureToMessage(error))), (
               user) => emit(AuthenticationAuthenticated(user: user)));
         } else if (isFirstVisit) {
+
           emit(AuthenticationFirstVisit());
           useCase.setFirstVisit();
         } else {

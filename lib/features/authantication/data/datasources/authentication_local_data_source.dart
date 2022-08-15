@@ -1,14 +1,23 @@
 import 'package:flutter_template_clean_architecture/features/authantication/data/models/user_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthenticationLocalDataSource {
-  void saveToken(String token) {}
 
-  Future<String> getToken() async {
-    return "";
+  final SharedPreferences sharedPreferences;
+
+  AuthenticationLocalDataSource({required this.sharedPreferences});
+  void saveToken(String token) async{
+    await sharedPreferences.setString('token', token);
   }
 
-  void saveUser(UserModel user) {}
+  Future<String> getToken() async {
+    return sharedPreferences.getString('token') ?? '';
+  }
+
+  void saveUser(UserModel user) async{
+
+  }
 
   Future<UserModel> getUser() async {
     var user = UserModel(
@@ -20,27 +29,29 @@ class AuthenticationLocalDataSource {
     return user;
   }
 
-  void setIsAuth(bool isAuth){
-
+  void setIsAuth(bool isAuth)async{
+    await sharedPreferences.setBool('isAuth', isAuth);
   }
   Future<bool> isAuth()async{
-    bool isAuth = true;
+   var isAuth = sharedPreferences.getBool('isAuth') ?? false;
     return isAuth;
   }
 
 
   Future<void> setFirstVisit()async{
-
+    await sharedPreferences.setBool('isFirstVisit', true);
   }
   Future<bool> isFirstVisit() async {
-    return false;
+    return sharedPreferences.getBool('isFirstVisit') ?? false;
   }
 
   Future<bool> hasToken ()async{
-    return true;
+    return sharedPreferences.getBool('isAuth') ?? false;
   }
 
   Future<void> signOut ()async{
-
+    await sharedPreferences.remove('token');
+    await sharedPreferences.setBool('isAuth', false);
+    return;
   }
 }

@@ -1,23 +1,28 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'common/config/routes/app_pages.dart';
 import 'common/config/themes/app_theme.dart';
+import 'common/constans/app_constants.dart';
 import 'common/constans/colors.dart';
 import 'common/utils/services/country_provider.dart';
+import 'common/utils/services/locale_provider.dart';
 import 'common/utils/services/toggle_obscure_password.dart';
 import 'features/authantication/domain/usecases/auth_usecase.dart';
 import 'features/authantication/presentation/bloc/authentication_bloc/authentication_bloc.dart';
 import 'features/authantication/presentation/bloc/login_bloc/login_bloc.dart';
 import 'features/authantication/presentation/bloc/simple_bloc_observer.dart';
 import 'features/authantication/presentation/screens/bloc_navigate.dart';
+
+import 'l10n/l10n.dart';
 import 'locator_service.dart' as di;
-// import 'locator_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,14 +36,15 @@ void main() async {
       MultiBlocProvider(
         providers: [
           BlocProvider<AuthenticationBloc>(
-              create: (context) => di.sl<AuthenticationBloc>()..add(AppStarted())),
+              create: (context) =>
+                  di.sl<AuthenticationBloc>()..add(AppStarted())),
           BlocProvider<LoginBloc>(
             create: (context) => LoginBloc(
               useCase: di.sl<AuthUseCase>(),
             ),
           ),
         ],
-        child: App(),
+        child: const App(),
       ),
     ),
     blocObserver: AppBlocObserver(),
@@ -50,7 +56,7 @@ void main() async {
 class App extends StatefulWidget {
   static const routeName = Routes.initial;
 
-  App({
+  const App({
     Key? key,
   }) : super(key: key);
 
@@ -73,7 +79,7 @@ class _AppState extends State<App> {
       final hasInternet = status == InternetConnectionStatus.connected;
       if (!hasInternet) {
         showSimpleNotification(
-          Text('There is no Internet connection',
+          const Text('There is no Internet connection',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: Font.sfText,
@@ -100,23 +106,36 @@ class _AppState extends State<App> {
             create: (context) => ToggleObscurePassword()),
         ChangeNotifierProvider<CountryProvider>(
             create: (context) => CountryProvider()..loadCountries()),
+        ChangeNotifierProvider<LocaleProvider>(
+            create: (context) => LocaleProvider()),
       ],
-      child: OverlaySupport.global(
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme().themeLight,
-          darkTheme: AppTheme().themeDark,
-          initialRoute: Routes.initial,
-          onUnknownRoute: (RouteSettings settings) =>
-              AppPages().onUnknownRoute(settings, context),
-          onGenerateRoute: (RouteSettings settings) =>
-              AppPages().generateRoute(settings, context),
-          home: BlocNavigate(
-            useCase: di.sl<AuthUseCase>(),
-            authenticationBloc: sl(),
+      builder: (context, child) {
+        final provider = Provider.of<LocaleProvider>(context);
+        return OverlaySupport.global(
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme().themeLight,
+            darkTheme: AppTheme().themeDark,
+            initialRoute: Routes.initial,
+            onUnknownRoute: (RouteSettings settings) =>
+                AppPages().onUnknownRoute(settings, context),
+            onGenerateRoute: (RouteSettings settings) =>
+                AppPages().generateRoute(settings, context),
+            locale: provider.locale,
+            supportedLocales: L10n.all,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            home: BlocNavigate(
+              useCase: di.sl<AuthUseCase>(),
+              authenticationBloc: di.sl(),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

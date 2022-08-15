@@ -1,7 +1,8 @@
-import 'package:crypterium_flutter/common/constans/app_constants.dart';
-import 'package:crypterium_flutter/common/constans/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import '../../constans/app_constants.dart';
+import '../../constans/colors.dart';
 
 // All custom application theme
 class AppTheme {
@@ -18,7 +19,7 @@ class AppTheme {
         scaffoldBackgroundColor: ColorApp.backgroundLight,
         buttonColor: ColorApp.dotWelcomScreen,
 
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: ColorApp.backgroundIcon,
         ),
 

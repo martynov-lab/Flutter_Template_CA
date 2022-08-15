@@ -1,8 +1,9 @@
 import 'dart:convert';
-import 'package:crypterium_flutter/common/utils/helpers/ascending_sort.dart';
-import 'package:crypterium_flutter/features/data/models/country_region_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+
+import '../../../features/authantication/data/models/country_region_model.dart';
+import '../helpers/ascending_sort.dart';
 
 // Region selection service for determining the phone number code
 class CountryProvider extends ChangeNotifier {

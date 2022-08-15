@@ -1,6 +1,8 @@
-import 'package:crypterium_flutter/features/presentation/screens/auth/inter_pin_view.dart';
-import 'package:crypterium_flutter/features/presentation/screens/screens.dart';
 import 'package:flutter/material.dart';
+
+import '../../../features/authantication/presentation/screens/home_view.dart';
+import '../../../features/authantication/presentation/screens/login_view.dart';
+import '../../../features/authantication/presentation/screens/welcome_view.dart';
 
 part 'app_routes.dart';
 
@@ -28,10 +30,7 @@ class AppPages {
       //   return MaterialPageRoute(builder: (BuildContext context) {
       //     return const InterPinScreen(token: ,);
       //   });
-      case RegisterView.routeName:
-        return MaterialPageRoute(builder: (BuildContext context) {
-          return const RegisterView();
-        });
+
       // case OtherScreen.routeName:
       //   final args = settings.arguments as Map<String, dynamic>;
       //   return MaterialPageRoute(builder: (BuildContext context) {

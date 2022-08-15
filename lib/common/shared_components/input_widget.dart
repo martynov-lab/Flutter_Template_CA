@@ -1,10 +1,11 @@
-import 'package:crypterium_flutter/common/constans/colors.dart';
-import 'package:crypterium_flutter/common/shared_components/custom_icons.dart';
-import 'package:crypterium_flutter/common/utils/mixins/app_mixins.dart';
-import 'package:crypterium_flutter/common/utils/services/toggle_obscure_password.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+
+import '../constans/colors.dart';
+import '../utils/mixins/app_mixins.dart';
+import '../utils/services/toggle_obscure_password.dart';
+import 'custom_icons.dart';
 
 class InputWidget extends StatelessWidget with ValidatorMixin {
   final BuildContext context;

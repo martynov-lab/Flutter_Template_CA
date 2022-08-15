@@ -21,12 +21,7 @@ class AuthenticationService {
     // );
 
     if (/*response.statusCode == 200*/ true) {
-      var resultData = json.decode("""{
-        "customerId": 5000016012,
-        "email": "martynov.a@routeamgroup.com",
-        "confirmedEmail": false,
-        "phone": "70000002291",
-      }""");
+      var resultData = json.decode('{"customerId": 5000016012,"email": "martynov.a@routeamgroup.com","confirmedEmail": false,"phone": "70000002291"}');
       var result = UserModel.fromJson(resultData);
       return Right(result);
     } else {
@@ -101,14 +96,7 @@ class AuthenticationService {
     // request.headers.addAll(headers);
     // var response = await request.send();
     // final respStr = await response.stream.bytesToString();
-    final responseData = json.decode("""{
-          "access_token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NzQzZmNiOS0xNzEwLTRmZDQtOGIxOC01ODc1MWUxYzg3YTkiLCJleHAiOjE2NjAzODM5MDUsImlhdCI6MTY2MDM4MDMwNX0.ZfAl8s0UVPNanc_BkjP7_uCqeYlUgerWnetHIm1IdyM",
-          "token_type": "bearer",
-          "refresh_token": "ac6f1461-0f75-42a3-aa70-006547d3b623",
-          "expires_in": 3599,
-          "scope": "read write",
-          "jti": "943dc964-f78e-4e14-b1ba-6d81131d040f"
-      }""");
+    final responseData = json.decode('{"access_token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NzQzZmNiOS0xNzEwLTRmZDQtOGIxOC01ODc1MWUxYzg3YTkiLCJleHAiOjE2NjAzODM5MDUsImlhdCI6MTY2MDM4MDMwNX0.ZfAl8s0UVPNanc_BkjP7_uCqeYlUgerWnetHIm1IdyM","token_type": "bearer","refresh_token": "ac6f1461-0f75-42a3-aa70-006547d3b623","expires_in": 3599,"scope": "read write","jti": "943dc964-f78e-4e14-b1ba-6d81131d040f"}');
     // if (response.statusCode == 200) {
     TokenModel token = TokenModel.fromJson(responseData);
     return Right(token);

@@ -10,21 +10,21 @@ class ImageAnimationPath {
 }
 
 class ImageRasterPath {
-  static const _folderPath = 'assets/images/raster';
-  static const myRaster1 = '$_folderPath/welcome_1.png';
-  static const myRaster2 = '$_folderPath/welcome_2.png';
-  static const myRaster3 = '$_folderPath/welcome_3.png';
-  static const myRaster4 = '$_folderPath/welcome_4.png';
-  static const myRaster5 = '$_folderPath/welcome_5.png';
-  static const ready = '$_folderPath/ready.png';
-  static const referal = '$_folderPath/referal.png';
-  static const pill = '$_folderPath/pill.png';
+  static const _folderPath = 'assets/json/anim';
+  static const welcome1 = '$_folderPath/welcome_1.json';
+  static const welcome2 = '$_folderPath/welcome_2.json';
+  static const welcome3 = '$_folderPath/welcome_3.json';
+  static const welcome4 = '$_folderPath/welcome_4.json';
+  static const welcome5 = '$_folderPath/welcome_5.json';
 }
 
 class ImageLogoPath {
   static const _folderPath = 'assets/logo';
-  static const logoWhite = '$_folderPath/logo_white_big.png';
-  static const logoBlack = '$_folderPath/logo_black_big.png';
+  static const logoWhite = '$_folderPath/flutter_logo_white.png';
+  static const logoBlack = '$_folderPath/flutter_logo_black.png';
+  static const logApp= '$_folderPath/flutter_logo_app.png';
+  static const splashBackground= '$_folderPath/flutter_logo_app.png';
+  static const logo= '$_folderPath/flutter_logo.png';
 }
 
 // class ImageVectorPath {

@@ -1,6 +1,8 @@
-import 'package:crypterium_flutter/common/constans/colors.dart';
-import 'package:crypterium_flutter/features/data/models/country_region_model.dart';
+
 import 'package:flutter/material.dart';
+
+import '../../features/authantication/data/models/country_region_model.dart';
+import '../constans/colors.dart';
 
 class CountryListTileWidget extends StatelessWidget {
   final CountryModel country;

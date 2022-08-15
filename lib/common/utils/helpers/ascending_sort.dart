@@ -1,4 +1,5 @@
-import 'package:crypterium_flutter/features/data/models/country_region_model.dart';
+
+import '../../../features/authantication/data/models/country_region_model.dart';
 
 class Sort {
   static int ascendingSort(CountryModel c1, CountryModel c2) =>

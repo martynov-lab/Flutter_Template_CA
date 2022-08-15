@@ -1,5 +1,5 @@
-import 'package:crypterium_flutter/common/shared_components/app_snackbar/tap_bounce_container.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_template_clean_architecture/common/shared_components/app_snackbar/tap_bounce_container.dart';
 
 // late AnimationController localAnimationController;
 

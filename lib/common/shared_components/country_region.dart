@@ -1,9 +1,11 @@
-import 'package:crypterium_flutter/common/shared_components/country_list_tile.dart';
-import 'package:crypterium_flutter/common/utils/services/country_provider.dart';
-import 'package:crypterium_flutter/features/data/models/country_region_model.dart';
+
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:provider/provider.dart';
+
+import '../../features/authantication/data/models/country_region_model.dart';
+import '../utils/services/country_provider.dart';
+import 'country_list_tile.dart';
 
 class CountryRegion extends StatelessWidget {
   const CountryRegion({Key? key}) : super(key: key);
@@ -53,7 +55,7 @@ class CountryRegion extends StatelessWidget {
               maxLines: 1,
               autofocus: false,
               onChanged: (value) {
-                var suggestions = service.countries.where((country) {
+                var  suggestions = service.countries.where((country) {
                   var input = value.toLowerCase();
                   var countryName = country.name!.toLowerCase();
                   return countryName.contains(input);
@@ -67,7 +69,7 @@ class CountryRegion extends StatelessWidget {
                 // value.isEmpty
                 //     ? service.isSearch = false
                 //     : service.isSearch = true;
-                countries = suggestions;
+                countries = suggestions as List<CountryModel>;
                 // print('Value: $value');
                 // print('countries: ${countries.length}');
                 // print('service.countries: ${service.countries.length}');
@@ -100,7 +102,7 @@ class CountryRegion extends StatelessWidget {
                         onTap: () {
                           searchController.clear();
                           service.isSearch = false;
-                          countries = service.countries;
+                          countries = service.countries as List<CountryModel>;
                         },
                         child: const Icon(Icons.cancel),
                       )
@@ -126,7 +128,7 @@ class CountryRegion extends StatelessWidget {
           builder: (context, _countries, _) {
             _countries.isSearch
                 ? countries = countries
-                : countries = _countries.countries;
+                : countries = _countries.countries as List<CountryModel>;
             return Expanded(
               child: countries.isEmpty
                   ? const Center(child: CircularProgressIndicator())

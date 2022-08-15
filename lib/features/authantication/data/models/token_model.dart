@@ -18,12 +18,12 @@ class TokenModel extends Equatable {
   });
 
   factory TokenModel.fromJson(Map<String, dynamic> json) => TokenModel(
-        accessToken: json[""] as String,
-        tokenType: json[""] as String,
-        refreshToken: json[""] as String,
-        expiresIn: json[""] as int,
-        scope: json[""] as String,
-        jti: json[""] as String,
+        accessToken: json["access_token"] as String,
+        tokenType: json["token_type"] as String,
+        refreshToken: json["refresh_token"] as String,
+        expiresIn: json["expires_in"] as int,
+        scope: json["scope"] as String,
+        jti: json["jti"] as String,
       );
 
   Map<String, dynamic> toJson() {

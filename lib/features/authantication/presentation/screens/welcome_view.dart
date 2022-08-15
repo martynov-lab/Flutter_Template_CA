@@ -1,197 +1,153 @@
-import 'package:app_tracking_transparency/app_tracking_transparency.dart';
-import 'package:crypterium_flutter/common/config/routes/app_pages.dart';
-import 'package:crypterium_flutter/common/constans/app_constants.dart';
-import 'package:crypterium_flutter/features/presentation/bloc/authentication_bloc/authentication_bloc_bloc.dart';
-import 'package:crypterium_flutter/features/presentation/components/button_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:introduction_screen/introduction_screen.dart';
-import 'package:notification_permissions/notification_permissions.dart';
+import 'package:lottie/lottie.dart';
+import '../../../../common/config/routes/app_pages.dart';
 
-class WelcomeView extends StatelessWidget {
+
+
+
+class WelcomeView extends StatefulWidget {
   static const routeName = Routes.welcome;
 
   const WelcomeView({Key? key}) : super(key: key);
+  @override
+  _WelcomeViewState createState() => _WelcomeViewState();
+}
 
-  void checkPermissions() async {
-    final status = await AppTrackingTransparency.requestTrackingAuthorization();
-
-    await NotificationPermissions.requestNotificationPermissions(
-      iosSettings:
-          const NotificationSettingsIos(sound: true, badge: true, alert: true),
-    );
-  }
-
-  Widget topPageView(
-    BuildContext context,
-    AuthenticationBloc bloc,
-    String imagePath,
-  ) {
-    return Stack(
-      children: [
-        Container(
-          width: double.infinity,
-          height: double.infinity,
-          child: Image.asset(
-            imagePath,
-            fit: BoxFit.cover,
-          ),
-        ),
-        Positioned(
-          top: 30,
-          right: 20,
-          child: GestureDetector(
-            onTap: (() {
-              bloc.add(LoggedOut());
-            }),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Theme.of(context).disabledColor,
-                  borderRadius: BorderRadius.all(Radius.circular(25))),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 8, right: 12, bottom: 8, left: 12),
-                child:
-                    Text('Skip', style: Theme.of(context).textTheme.headline6),
-              ),
+class _WelcomeViewState extends State<WelcomeView> {
+  List<Widget> slides = items
+      .map((item) => Container(
+      padding: EdgeInsets.symmetric(horizontal: 18.0),
+      child: Column(
+        children: <Widget>[
+          Flexible(
+            flex: 1,
+            fit: FlexFit.tight,
+            child: Lottie.asset(
+              item['image'] as String,
+              // fit: BoxFit.fitWidth,
+              // width: 220.0,
+              // alignment: Alignment.bottomCenter,
             ),
           ),
-        ),
-      ],
-    );
+          Flexible(
+            flex: 1,
+            fit: FlexFit.tight,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 30.0),
+              child: Column(
+                children: <Widget>[
+                  Text(item['header'],
+                      style: TextStyle(
+                          fontSize: 50.0,
+                          fontWeight: FontWeight.w300,
+                          color: Color(0XFF3F3D56),
+                          height: 2.0)),
+                  Text(
+                    item['description'],
+                    style: TextStyle(
+                        color: Colors.grey,
+                        letterSpacing: 1.2,
+                        fontSize: 16.0,
+                        height: 1.3),
+                    textAlign: TextAlign.center,
+                  )
+                ],
+              ),
+            ),
+          )
+        ],
+      )))
+      .toList();
+
+  List<Widget> indicator() => List<Widget>.generate(
+      slides.length,
+          (index) => Container(
+        margin: EdgeInsets.symmetric(horizontal: 3.0),
+        height: 10.0,
+        width: 10.0,
+        decoration: BoxDecoration(
+            color: currentPage.round() == index
+                ? Color(0XFF256075)
+                : Color(0XFF256075).withOpacity(0.2),
+            borderRadius: BorderRadius.circular(10.0)),
+      ));
+
+  double currentPage = 0.0;
+  final _pageViewController = PageController();
+
+  @override
+  void initState() {
+    super.initState();
+    _pageViewController.addListener(() {
+      setState(() {
+        currentPage = _pageViewController.page ?? 0.0;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    FocusScope.of(context).unfocus();
-    checkPermissions();
-    final bloc = BlocProvider.of<AuthenticationBloc>(context);
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      body: IntroductionScreen(
-        pages: [
-          PageViewModel(
-            image: topPageView(context, bloc, ImageRasterPath.myRaster1),
-            title: 'Multiply your crypto investment',
-            body:
-                'Opt for Crypterium high-yield short-term deposits and earn more on your savings than you would with average rates on the market.',
-            footer: ButtonWidget(
-              text: 'Start earning',
-              style: Theme.of(context).textTheme.button,
-              isActive: true,
-              onPressed: () {
-                bloc.add(LoggedOut());
+      body: Container(
+        child: Stack(
+          children: <Widget>[
+            PageView.builder(
+              controller: _pageViewController,
+              itemCount: slides.length,
+              itemBuilder: (BuildContext context, int index) {
+                return slides[index];
               },
             ),
-            decoration: getPageDecoration(context),
-          ),
-          PageViewModel(
-            image: topPageView(context, bloc, ImageRasterPath.myRaster2),
-            title: 'Multiply your crypto investment',
-            body:
-                'Opt for Crypterium high-yield short-term deposits and earn more on your savings than you would with average rates on the market.',
-            footer: ButtonWidget(
-              text: 'Start earning',
-              style: Theme.of(context).textTheme.button,
-              isActive: true,
-              onPressed: () {
-                bloc.add(LoggedOut());
-              },
-            ),
-            decoration: getPageDecoration(context),
-          ),
-          PageViewModel(
-            image: topPageView(context, bloc, ImageRasterPath.myRaster3),
-            title: 'Multiply your crypto investment',
-            body:
-                'Opt for Crypterium high-yield short-term deposits and earn more on your savings than you would with average rates on the market.',
-            footer: ButtonWidget(
-              text: 'Start earning',
-              style: Theme.of(context).textTheme.button,
-              isActive: true,
-              onPressed: () {
-                bloc.add(LoggedOut());
-              },
-            ),
-            decoration: getPageDecoration(context),
-          ),
-          PageViewModel(
-            image: Container(
-              width: double.infinity,
-              height: double.infinity,
-              child: topPageView(context, bloc, ImageRasterPath.myRaster4),
-            ),
-            title: 'Multiply your crypto investment',
-            body:
-                'Opt for Crypterium high-yield short-term deposits and earn more on your savings than you would with average rates on the market.',
-            footer: ButtonWidget(
-              text: 'Start earning',
-              style: Theme.of(context).textTheme.button,
-              isActive: true,
-              onPressed: () {
-                bloc.add(LoggedOut());
-              },
-            ),
-            decoration: getPageDecoration(context),
-          ),
-        ],
-        animationDuration: 1000,
-
-        skip: Text('Skip'),
-        done: Text('Read'),
-        onDone: () {
-          bloc.add(LoggedOut());
-        },
-        next: Icon(Icons.arrow_forward),
-        //skipFlex: 0,
-        nextFlex: 0,
-        skipOrBackFlex: 0,
-        //controlsPadding: EdgeInsets.zero,
-        //dotsContainerDecorator: BoxDecoration(color: Colors.green[200]),
-        dotsDecorator: getDotsDecorator(context),
-        globalBackgroundColor: Theme.of(context).primaryColor,
-        showDoneButton: false,
-        showNextButton: false,
-        showSkipButton: false,
-        //baseBtnStyle: ButtonStyle(backgroundColor: Colors.amber),
+            Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  margin: EdgeInsets.only(top: 70.0),
+                  padding: EdgeInsets.symmetric(vertical: 40.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: indicator(),
+                  ),
+                )
+              //  ),
+            )
+            // )
+          ],
+        ),
       ),
     );
   }
-
-  DotsDecorator getDotsDecorator(context) => DotsDecorator(
-        color: Theme.of(context).buttonColor, // ColorApp.dotWelcomScreen,
-        size: Size(8, 4),
-        activeSize: Size(16, 4),
-        activeColor: Theme.of(context).primaryColorDark,
-        activeShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      );
-
-  PageDecoration getPageDecoration(BuildContext context) {
-    var _height = MediaQuery.of(context).size.height;
-    return PageDecoration(
-      //boxDecoration: BoxDecoration(color: Colors.green[200]),
-      titleTextStyle: _height < 700
-          ? Theme.of(context).textTheme.headline5!.copyWith(fontSize: 18)
-          : Theme.of(context).textTheme.headline5!,
-      bodyTextStyle: _height < 700
-          ? Theme.of(context).textTheme.subtitle2!.copyWith(fontSize: 12)
-          : Theme.of(context).textTheme.subtitle2!,
-      bodyPadding: _height < 700
-          ? const EdgeInsets.only(top: 10, right: 20, left: 20)
-          : const EdgeInsets.only(top: 10, right: 50, left: 50),
-      imagePadding: EdgeInsets.zero,
-      titlePadding: const EdgeInsets.only(top: 10, right: 30, left: 30),
-      contentMargin: EdgeInsets.zero,
-      imageFlex: 2,
-      footerPadding: _height < 700
-          ? const EdgeInsets.symmetric(horizontal: 30, vertical: 20)
-          : const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-      //pageColor: Theme.of(context).primaryColor,
-    );
-  }
 }
+
+
+List items = [
+  {
+    "header": "Text 1",
+    "description":
+    "Online chat which provides its users maximum functionality to simplify the search",
+    "image": "assets/json/anim/welcome_1.json"
+  },
+  {
+    "header": "Text 2",
+    "description":
+    "Online chat which provides its users maximum functionality to simplify the search",
+    "image": "assets/json/anim/welcome_2.json"
+  },
+  {
+    "header": "Text 3",
+    "description":
+    "Online chat which provides its users maximum functionality to simplify the search",
+    "image": "assets/json/anim/welcome_3.json"
+  },
+  {
+    "header": "Text 4",
+    "description":
+    "Online chat which provides its users maximum functionality to simplify the search",
+    "image": "assets/json/anim/welcome_4.json"
+  },
+  {
+    "header": "Text 5",
+    "description":
+    "Online chat which provides its users maximum functionality to simplify the search",
+    "image": "assets/json/anim/welcome_5.json"
+  }
+];

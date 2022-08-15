@@ -1,6 +1,7 @@
-import 'package:crypterium_flutter/common/constans/app_constants.dart';
-import 'package:crypterium_flutter/common/constans/colors.dart';
 import 'package:flutter/material.dart';
+
+import '../../constans/app_constants.dart';
+import '../../constans/colors.dart';
 
 class CustomSnackBar extends StatefulWidget {
   final String message;

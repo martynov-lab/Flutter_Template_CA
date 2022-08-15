@@ -1,9 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import '../../../../common/config/routes/app_pages.dart';
+import '../../../../common/constans/app_constants.dart';
 import '../../../../common/constans/colors.dart';
 import '../../../../common/utils/services/country_provider.dart';
+import '../bloc/authentication_bloc/authentication_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeView extends StatelessWidget {
   static const routeName = Routes.home;
@@ -34,7 +37,7 @@ class HomeView extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: GestureDetector(
                 onTap: (() {
-                  // BlocProvider.of<AuthenticationBloc>(context).add(Register());
+                  BlocProvider.of<AuthenticationBloc>(context).add(LoggedOut());
                 }),
                 child: Container(
                   decoration: const BoxDecoration(
@@ -44,7 +47,7 @@ class HomeView extends StatelessWidget {
                     padding: const EdgeInsets.only(
                         top: 8, right: 12, bottom: 8, left: 12),
                     child: Text(
-                      'Sign up',
+                      AppLocalizations.of(context)!.loginout,
                       style: Theme.of(context)
                           .textTheme
                           .button!
@@ -62,143 +65,16 @@ class HomeView extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: ColorApp.chipsBackgroundLight,
-                  width: 2.0,
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                child: Text(
+                  AppLocalizations.of(context)!.hello('    '),
+                  style: TextStyle(fontSize: 36),
                 ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Earn \$31 for free',
-                            style: Theme.of(context).textTheme.headline6),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text('Try \$1 288 free trial – 0 cost',
-                            style: Theme.of(context).textTheme.bodyText1),
-                      ],
-                    ),
-                    Image.asset(
-                      ImageRasterPath.pill,
-                      fit: BoxFit.contain,
-                      width: 50,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-              height: 30,
-              width: double.infinity,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(right: 10),
-                    decoration: const BoxDecoration(
-                        color: ColorApp.yellowButton,
-                        borderRadius: BorderRadius.all(Radius.circular(25))),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 8, right: 12, bottom: 8, left: 12),
-                      child: Text(
-                        'USDT',
-                        style: Theme.of(context).textTheme.button!.copyWith(
-                            fontWeight: FontWeight.w500, fontSize: 14),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(right: 10),
-                    decoration: const BoxDecoration(
-                        color: ColorApp.chipsBackgroundLight,
-                        borderRadius: BorderRadius.all(Radius.circular(25))),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 8, right: 12, bottom: 8, left: 12),
-                      child: Text(
-                        'BTC',
-                        style: Theme.of(context).textTheme.button!.copyWith(
-                            fontWeight: FontWeight.w500, fontSize: 14),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(right: 10),
-                    decoration: BoxDecoration(
-                        color: ColorApp.chipsBackgroundLight,
-                        borderRadius: BorderRadius.all(Radius.circular(25))),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 8, right: 12, bottom: 8, left: 12),
-                      child: Text(
-                        'ETH',
-                        style: Theme.of(context).textTheme.button!.copyWith(
-                            fontWeight: FontWeight.w500, fontSize: 14),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(right: 10),
-                    decoration: BoxDecoration(
-                        color: ColorApp.chipsBackgroundLight,
-                        borderRadius: BorderRadius.all(Radius.circular(25))),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 8, right: 12, bottom: 8, left: 12),
-                      child: Text(
-                        'CRPT',
-                        style: Theme.of(context).textTheme.button!.copyWith(
-                            fontWeight: FontWeight.w500, fontSize: 14),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(right: 10),
-                    decoration: BoxDecoration(
-                        color: ColorApp.chipsBackgroundLight,
-                        borderRadius: BorderRadius.all(Radius.circular(25))),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 8, right: 12, bottom: 8, left: 12),
-                      child: Text(
-                        'CHO',
-                        style: Theme.of(context).textTheme.button!.copyWith(
-                            fontWeight: FontWeight.w500, fontSize: 14),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 40),
-              child: Center(
-                child: Text('Home Screen',
-                    style: Theme.of(context).textTheme.headline4),
-              ),
-            ),
-          ],
-        ),
+              )
+            ]),
       ),
       bottomNavigationBar: BottomNavigationBar(
         selectedFontSize: 18,
@@ -213,7 +89,7 @@ class HomeView extends StatelessWidget {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.panorama_fish_eye),
-            label: 'Earn',
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.panorama_fish_eye),
@@ -225,7 +101,7 @@ class HomeView extends StatelessWidget {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.panorama_fish_eye),
-            label: 'Balance',
+            label: 'Profile',
           ),
         ],
       ),

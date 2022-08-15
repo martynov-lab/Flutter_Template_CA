@@ -1,0 +1,6 @@
+{
+    "language": "Русский",
+    "helloWorld": "Привет мир!",
+    "hello": "Привет {username}",
+    "loginout": "Выход"
+}
